@@ -39,10 +39,10 @@ void Resource::set(std::string str) {
     if(first != "{" || last != "}")
         return;
 
-
     // to sync clinet and server playing
     if(this->game->get_server() && (this->game->get_game_turn() != this->game->get_player_turn() ) ){
         this->game->set_game_turn(game_turn);
+        this->game->get_ball(0)->set_teta(teta);
         this->game->get_ball(0)->set_speed(white_speed);
         this->game->set_score(0, server_score);
         this->game->set_score(1, player_score);
@@ -129,6 +129,8 @@ void Resource::set(std::string str) {
 
     }
     return;
+
+    //  to usefor loop instead:
 //    for(int i = 0 ; i < 22; i++){
 //        double ball_x, ball_y ;
 //        inp >> ball_x >> ball_y;
@@ -141,7 +143,6 @@ std::string Resource::get() {
     std::stringstream res;
 
     //inp >> first >> game_turn >> server_score >> player_score >> teta >> white_speed >> white_x >> white_y
-
 
     // to check if the data is received completely check if first and last there is a {}
     res << "{ "
