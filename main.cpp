@@ -23,7 +23,7 @@ int main() {
     //        ,double D_radius, double cue_x, double cue_y, double cue_speed, double rotationDegree
     //           int declared_index,int potted_index, int collide_by_cue_ball, int red_count, int game_t, int player_t, bool is_server, bool red_turn);
 
-    Game *game = new Game(356 * 2, 177 * 2, pocket_x, pocket_y, 4.75 , 4 * 2, 73.7 * 2, 29 * 2, 350, 180, 20, 0,-1,-1,-1,15,0,0,true,true); //13
+    Game *game = new Game(356 * 2, 177 * 2, pocket_x, pocket_y, 4.75 , 4 * 2, 73.7 * 2, 29 * 2, 350, 180, 20, 0,-1,-1,-1,15,-1,-1,true,true); //13
     Resource *resource = new Resource(game);
     Network *network;
 
@@ -35,7 +35,6 @@ int main() {
         pthread_create(&thread, NULL, reinterpret_cast<void *(*)(void *)>(broadcast), NULL);
         network->listen();
         flag=false;
-
         game->set_is_server(true);
         game->set_player_turn(0);
 
@@ -64,20 +63,23 @@ int main() {
 // 0: white, 1:15 red, 16:yellow, 17:brown, 18:green, 19:blue, 20:pink, 21:black
 
     int game_turn, player_turn ;
+    game->set_game_turn(0);
 
     while (window.isOpen()) {
 
         game_turn = game->get_game_turn();
         player_turn = game->get_player_turn();
 
-// change this line:
+        // change this line:
         //game_turn = player_turn = 1;
 
         while (window.pollEvent(event)) {
+            // check if it's the players turn and all the ball have stopped:
 
-            if(game_turn == player_turn){
-                if (event.type == sf::Event::Closed)
-                    window.close();
+            if (event.type == sf::Event::Closed)
+                window.close();
+
+            if(game_turn == player_turn && game->is_turn_finished()){
                 if (event.type == sf::Event::KeyPressed) {
 
                     if (event.key.code == sf::Keyboard::Right)
@@ -91,6 +93,7 @@ int main() {
                     game->set_cue_x(event.mouseMove.x);
                     game->set_cue_y(event.mouseMove.y);
                 }
+
                 if (event.type == sf::Event::MouseButtonPressed) {
                     if (event.mouseButton.button == sf::Mouse::Left) {
                         if (((game->get_ball(0)->get_x() - game->get_ball_radius()) <= event.mouseButton.x &&
