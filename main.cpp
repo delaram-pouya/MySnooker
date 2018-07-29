@@ -146,11 +146,15 @@ int main() {
                 }
             }
         }
+
         game->update(); //moves balls and calls --> check_wall_collision , check_ball2ball_collision
         //game->rules();  //checks if the cue ball has collided with any ball and if it has collided with the right ball
         game->check_potted();  // checks if any ball has been potted
         //std::cout << "my score is "  << game->get_score(game->get_player_turn()) << std::endl;
         //std::cout << "apponent score is: " << game->get_score(game->get_opponent_turn()) << std::endl;
+
+        if( game->is_turn_finished() )
+            game->set_game_turn(game->get_opponent_turn());
 
         //if(a==0)
         network->send();

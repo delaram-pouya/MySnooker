@@ -62,6 +62,8 @@ public:
     void set_is_server(bool);
     bool get_server();
 
+    bool is_turn_finished();
+
 
 private:
     int width, height, scores[2] ;

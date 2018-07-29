@@ -324,7 +324,7 @@ void Game::rules() {
         //this->scores[this->player_turn] -= 4;
         this->scores[this->get_opponent_turn()] += 4;
         //loose turn
-        this->set_player_turn(this->get_opponent_turn());
+        this->set_game_turn(this->get_opponent_turn());
     }
 
     // turn to not collided state for the next round :
@@ -358,7 +358,7 @@ void Game::check_potted() {
                 //this->scores[this->player_turn] -= 4;
                 this->scores[this->get_opponent_turn()] += 4;
                 // loose the turn
-                this->set_player_turn(this->get_opponent_turn());
+                this->set_game_turn(this->get_opponent_turn());
             }
 
             // if a red ball has been potted:
@@ -371,7 +371,7 @@ void Game::check_potted() {
                     //this->scores[this->player_turn]--;
                     this->scores[this->get_opponent_turn()] ++;
                 // loose the turn --> how to implement??
-                    this->set_player_turn(this->get_opponent_turn());
+                    this->set_game_turn(this->get_opponent_turn());
                     }
             }
 
@@ -420,6 +420,7 @@ void Game::update() {
         }
         this->check_wall_collision(); //checks collision with walls
         this->check_ball2ball_collision(); //checks ball to ball collisions
+
 
     }
 
@@ -471,6 +472,13 @@ void Game::set_is_server(bool value) {
 
 bool Game::get_server() {
     return this->is_server;
+}
+
+bool Game::is_turn_finished() {
+    for(int i = 0 ; i < 22 ; i++ )
+        if( this->get_ball(i)->get_speed() != 0)
+            return false;
+    return true;
 }
 
 
