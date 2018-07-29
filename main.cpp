@@ -80,6 +80,7 @@ int main() {
                 window.close();
 
             if(game_turn == player_turn && game->is_turn_finished()){
+                cout << "it's my: " << player_turn << " turn" << endl;
                 if (event.type == sf::Event::KeyPressed) {
 
                     if (event.key.code == sf::Keyboard::Right)
@@ -95,14 +96,23 @@ int main() {
                 }
 
                 if (event.type == sf::Event::MouseButtonPressed) {
+
                     if (event.mouseButton.button == sf::Mouse::Left) {
+
                         if (((game->get_ball(0)->get_x() - game->get_ball_radius()) <= event.mouseButton.x &&
                              event.mouseButton.x <= (game->get_ball(0)->get_x() + game->get_ball_radius()))
                             && ((game->get_ball(0)->get_y() - game->get_ball_radius()) <= event.mouseButton.y &&
                                 event.mouseButton.y <= (game->get_ball(0)->get_y() + game->get_ball_radius())))
                         {
                             std::cout << "in white ball! " << std::endl;
-                            if(!game->get_red_flag() || game->red_ball_count()==0){
+
+                            // if you want to get cue speed from user instead of default value: 20
+                            int user_speed =  20;
+                            //std::cout << "enter the speed: 18, 19, 20 " << endl;
+                            //cin >> user_speed;
+
+                            // attempt to pot a colored ball:
+                            if( !game->get_red_flag() || game->red_ball_count() == 0 ){
                                 int ball_index;
                                 std::cout << "enter ball index(16:yellow, 17:brown, 18:green, 19:blue, 20:pink, 21:black):  " << endl;
                                 std::cin >> ball_index;
@@ -119,29 +129,24 @@ int main() {
                                 teta = (game->get_rotatation_degree() + 180 )/180;
                                 teta = teta *  3.141592653589793;
                                 game->get_ball(0)->set_teta(teta);
-
-                                int user_speed;
-                                std::cout << "enter the speed: 18, 19, 20 " << endl;
-                                cin >> user_speed;
                                 game->set_cue_speed(user_speed);
                                 game->get_ball(0)->set_speed(game->get_cue_speed());
                                 //std::cout << "white ball initial speed is: " << game->get_ball(0)->get_speed() << std::endl;
-                                //red = true;
                                 game->set_red_flag(true);
                             }
                             // if it's red ball turn :
+                                // attempt to pot a red ball:
                             else if(game->get_red_flag()){
 
                                 game->set_declare_ball_index(23);
                                 teta = (game->get_rotatation_degree() + 180 )/180;
                                 teta = teta *  3.141592653589793;
                                 game->get_ball(0)->set_teta(teta);
+                                game->set_cue_speed(user_speed);
                                 game->get_ball(0)->set_speed(game->get_cue_speed());
                                 //std::cout << "white ball initial speed is: " << game->get_ball(0)->get_speed() << std::endl;
-                                //red = false;
                                 game->set_red_flag(false);
                             }
-                            // if it's colored ball turn
                         }
                     }
                 }
@@ -154,8 +159,12 @@ int main() {
         //std::cout << "my score is "  << game->get_score(game->get_player_turn()) << std::endl;
         //std::cout << "apponent score is: " << game->get_score(game->get_opponent_turn()) << std::endl;
 
-        if( game->is_turn_finished() )
+        if( game->is_turn_finished() && game->get_game_turn() == game->get_player_turn() ) {
+//            cout << "before finish turn "<< game->get_player_turn() << endl;
+//            cout << " *********** game turn is finished ************* " << endl;
             game->set_game_turn(game->get_opponent_turn());
+            //cout << "after finish turn "<< game->get_player_turn() << endl;
+        }
 
 
         //if(a==0)
@@ -168,7 +177,7 @@ int main() {
         // check if game is finished:
         if(game->is_game_finished()){
 
-            cout <<  " ***** "  << setw(10) <<"GAME FINISHED" << setw(10) << " ***** " << endl;
+            cout <<  " ***** "  << setw(10) << "GAME FINISHED" << setw(10) << " ***** " << endl;
             int winner = game->get_winner_index();
             if(winner == -1)
                 cout << "game is tide " << endl;

@@ -9,8 +9,6 @@ Resource::Resource(Game *game) {
 
 void Resource::set(std::string str) {
 
-
-
     std::stringstream inp(str);
 
     double white_x, red1_x, red2_x, red3_x, red4_x, red5_x, red6_x,
@@ -24,12 +22,12 @@ void Resource::set(std::string str) {
     int game_turn;
     int server_score, player_score;
 
-    double white_speed;
+    double white_speed, teta;
 
     std::string first,last;
 
 
-    inp >> first >> game_turn >> server_score >> player_score >> white_speed >> white_x >> white_y >>red1_x >> red1_y >> red2_x  >>  red2_y >> red3_x >> red3_y >> red4_x >> red4_y >>
+    inp >> first >> game_turn >> server_score >> player_score >> teta >> white_speed >> white_x >> white_y >>red1_x >> red1_y >> red2_x  >>  red2_y >> red3_x >> red3_y >> red4_x >> red4_y >>
              red5_x >> red5_y>> red6_x >> red6_y >> red7_x >> red7_y >> red8_x >> red8_y >> red9_x >> red9_y >> red10_x >> red10_y
              >> red11_x >> red11_y >> red12_x >> red12_y >> red13_x  >> red13_y >> red14_x >> red14_y >> red15_x >> red15_y >>
             yellow_x >> yellow_y >> brown_x >> brown_y >> green_x>> green_y >> blue_x >> blue_y >> pink_x >> pink_y >> black_x >> black_y >> last;
@@ -43,24 +41,25 @@ void Resource::set(std::string str) {
 
 
     // to sync clinet and server playing
-
-    if(this->game->get_server() && (this->game->get_game_turn() != this->game->get_player_turn() )  ){
+    if(this->game->get_server() && (this->game->get_game_turn() != this->game->get_player_turn() ) ){
         this->game->set_game_turn(game_turn);
         this->game->get_ball(0)->set_speed(white_speed);
-
+        this->game->set_score(0, server_score);
+        this->game->set_score(1, player_score);
     }
 
-    //this->game->set_position(1, p_position);
-    //might need to comment later
+
+    //inp >> first >> game_turn >> server_score >> player_score >> teta >> white_speed >> white_x >> white_y
     if(!this->game->get_server()) {
 
-        //this->game->get_ball(0)->set_speed(white_speed);
-
         this->game->set_game_turn(game_turn);
+
+        this->game->get_ball(0)->set_speed(white_speed);
+
+        this->game->get_ball(0)->set_teta(teta);
 
         this->game->set_score(0, server_score);
         this->game->set_score(1, player_score);
-
 
         this->game->get_ball(0)->set_x(white_x);
         this->game->get_ball(0)->set_y(white_y);
@@ -127,21 +126,28 @@ void Resource::set(std::string str) {
 
         this->game->get_ball(21)->set_x(black_x);
         this->game->get_ball(21)->set_y(black_y);
+
     }
     return;
+//    for(int i = 0 ; i < 22; i++){
+//        double ball_x, ball_y ;
+//        inp >> ball_x >> ball_y;
+//        this->game->get_ball(i)->set_x(ball_x);
+//        this->game->get_ball(i)->set_y(ball_y);
+//    }
 }
 
 std::string Resource::get() {
     std::stringstream res;
 
-    //inp >> first >> game_turn >> server_score >> player_score >> white_x
+    //inp >> first >> game_turn >> server_score >> player_score >> teta >> white_speed >> white_x >> white_y
 
 
     // to check if the data is received completely check if first and last there is a {}
     res << "{ "
         << this->game->get_game_turn() << " "
         << this->game->get_score(0) << " " << this->game->get_score(1) << " "
-
+        << this->game->get_ball(0)->get_teta() << " "
         << this->game->get_ball(0)->get_speed() << " "
 
         << this->game->get_ball(0)->get_x() << " " << this->game->get_ball(0)->get_y() << " "
@@ -170,4 +176,6 @@ std::string Resource::get() {
 
     return res.str();
 }
+
+
 
