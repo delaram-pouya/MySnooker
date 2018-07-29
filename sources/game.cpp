@@ -190,13 +190,13 @@ void Game::check_ball2ball_collision() {
                 else
                     this->collided_by_cue_ball = -1;
 
-                cout << "before: " << endl;
-                cout << "first ball: " << balls[first]->get_color() <<" vf1 is: "
-                     << balls[first]->get_speed() <<" teta is: "<< balls[first]->get_teta() << std::endl;
-                cout << "second ball: " << balls[second]->get_color() << " vf2 is: "
-                     << balls[second]->get_speed()<<" teta is: "<< balls[second]->get_teta() << std::endl;
-
-                cout << this->balls[first]->get_color() << " was moving and " << this->balls[second]->get_color() << " was static" << std::endl;
+//                cout << "before: " << endl;
+//                cout << "first ball: " << balls[first]->get_color() <<" vf1 is: "
+//                     << balls[first]->get_speed() <<" teta is: "<< balls[first]->get_teta() << std::endl;
+//                cout << "second ball: " << balls[second]->get_color() << " vf2 is: "
+//                     << balls[second]->get_speed()<<" teta is: "<< balls[second]->get_teta() << std::endl;
+//
+//                cout << this->balls[first]->get_color() << " was moving and " << this->balls[second]->get_color() << " was static" << std::endl;
                 teta = balls[first]->get_teta();
 
                 vf2 =abs( balls[first]->get_speed()/  sqrt(1 + ( cos(teta)*cos(teta) )/( (sin(2*teta)* sin(2*teta))))   );
@@ -218,11 +218,11 @@ void Game::check_ball2ball_collision() {
 
 
 
-                cout << "after: " << endl;
-                cout << "first ball: " << balls[first]->get_color() <<" vf1 is: "
-                     << balls[first]->get_speed() <<" teta is: "<< balls[first]->get_teta() << std::endl;
-                cout << "second ball: " << balls[second]->get_color() << " vf2 is: "
-                     << balls[second]->get_speed()<<" teta is: "<< balls[second]->get_teta() << std::endl;
+//                cout << "after: " << endl;
+//                cout << "first ball: " << balls[first]->get_color() <<" vf1 is: "
+//                     << balls[first]->get_speed() <<" teta is: "<< balls[first]->get_teta() << std::endl;
+//                cout << "second ball: " << balls[second]->get_color() << " vf2 is: "
+//                     << balls[second]->get_speed()<<" teta is: "<< balls[second]->get_teta() << std::endl;
 
                 cout << "first ball: " << balls[first]->get_color() <<" x is: "
                      << balls[first]->get_x() <<" y is: " << balls[first]->get_y() << std::endl;
@@ -282,45 +282,29 @@ void Game::check_wall_collision() {
 
 
 void Game::rules() {
+    // if cue collision with a ball happends:
+    // check if cue ball has collided with anything --> check if it's with the right ball
 
-    if(this->declared_ball_index > 0){
-        while(this->balls[declared_ball_index]->get_speed() != 0  || !this->balls[collided_by_cue_ball]->check_in_hole()){
+    // this only captures the last collision:
+    if( this->collided_by_cue_ball>0) {
 
-            this->update();
+        // if it's red ball turn: --> (0,15)
+        if(this->declared_ball_index == 23 && this->collided_by_cue_ball < 16){
+            //has collided with right ball
+            this->check_potted(); // checks if wrong balls haven't been potted and sets the score
+        }
 
-            // if cue collision with a ball happends:
-            // check if cue ball has collided with anything --> check if it's with the right ball
-            if( this->collided_by_cue_ball>0) {
+        // if it's colored ball turn:
+        else if( this->declared_ball_index == this->collided_by_cue_ball && this->collided_by_cue_ball > 15){
+            this->check_potted(); // checks is wrong balls haven't been potted and sets the score
+        }
 
-                // if it's red ball turn:
-                if(this->declared_ball_index == 23 && this->collided_by_cue_ball > 0 && this->collided_by_cue_ball < 16){
-                    // until the stops or gets potted --> check if it has been potted or not
-
-                    //probabely won't enter the while loop
-                    while(this->balls[collided_by_cue_ball]->get_speed() != 0  || !this->balls[collided_by_cue_ball]->check_in_hole())
-                        this->update();
-
-                    this->check_potted(); // checks is wrong balls haven't been potted and sets the score
-                }
-
-                // if it's colored ball turn:
-                if( this->declared_ball_index == this->collided_by_cue_ball && this->collided_by_cue_ball > 15){
-
-                    //probabely won't enter the while loop
-                    while(this->balls[collided_by_cue_ball]->get_speed() != 0  || !this->balls[collided_by_cue_ball]->check_in_hole())
-                        this->update();
-
-                    this->check_potted(); // checks is wrong balls haven't been potted and sets the score
-                }
-
-                    // if cue ball has collided with :
-                    /// not in turn ball(red vs colored)
-                    /// not the declared ball when it's colored ball turn
-                else{
-                    //this->scores[this->player_turn] -= max(this->balls[collided_by_cue_ball]->get_score(), 4);
-                    this->scores[this->get_opponent_turn()] += max(this->balls[collided_by_cue_ball]->get_score(), 4);
-                }
-            }
+            // if cue ball has collided with :
+            /// not in turn ball(red vs colored)
+            /// not the declared ball when it's colored ball turn
+        else{
+            //this->scores[this->player_turn] -= max(this->balls[collided_by_cue_ball]->get_score(), 4);
+            this->scores[this->get_opponent_turn()] += max(this->balls[collided_by_cue_ball]->get_score(), 4);
         }
     }
 
@@ -333,11 +317,9 @@ void Game::rules() {
         this->set_game_turn(this->get_opponent_turn());
     }
 
-    // turn to not collided state for the next round :
-    this->collided_by_cue_ball = -1;
-    this->declared_ball_index = -1;
-
 }
+
+
 
 
 void Game::set_declare_ball_index(int index) {
@@ -503,9 +485,13 @@ int Game::get_winner_index() {
 }
 
 void Game::reset() {
+
     this->set_red_flag(true);
+    // next player need to declare new balls(red: 23 , colored:index)
     this->declared_ball_index = -1;
+    //
     this->last_potted_index = -1;
+    // turn to not collided state for the next round :
     this->collided_by_cue_ball = -1;
     this->get_ball(0)->set_in_hole(false);
     if(this->red_ball_count() != 0 )

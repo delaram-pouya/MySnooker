@@ -34,6 +34,7 @@ int main() {
         pthread_t thread;
         pthread_create(&thread, NULL, reinterpret_cast<void *(*)(void *)>(broadcast), NULL);
         network->listen();
+        ////  if you need a list of servers for the client to choose between them --> omit --> flag = false
         flag=false;
         game->set_is_server(true);
         game->set_player_turn(0);
@@ -48,7 +49,6 @@ int main() {
         game->set_player_turn(1);
     }
 
-    ////////////  implement a list of servers for the client to choose between them:
     /// display the list on the sreen --> the client should
 
     sf::RenderWindow window(sf::VideoMode(356 * 2, 177 * 2), "SFML Application");
@@ -80,7 +80,7 @@ int main() {
                 window.close();
 
             if(game_turn == player_turn && game->is_turn_finished()){
-                cout << "it's my: " << player_turn << " turn" << endl;
+                //cout << "it's my: " << player_turn << " turn" << endl;
                 if (event.type == sf::Event::KeyPressed) {
 
                     if (event.key.code == sf::Keyboard::Right)
@@ -126,6 +126,8 @@ int main() {
                                         }
 
                                 game->set_declare_ball_index(ball_index);
+                                // in order to avoid getting out of range
+                                teta = int(teta) % 360;
                                 teta = (game->get_rotatation_degree() + 180 )/180;
                                 teta = teta *  3.141592653589793;
                                 game->get_ball(0)->set_teta(teta);
@@ -154,11 +156,17 @@ int main() {
         }
 
         game->update(); //moves balls and calls --> check_wall_collision , check_ball2ball_collision
-        //game->rules();  //checks if the cue ball has collided with any ball and if it has collided with the right ball
         game->check_potted();  // checks if any ball has been potted
         //std::cout << "my score is "  << game->get_score(game->get_player_turn()) << std::endl;
         //std::cout << "apponent score is: " << game->get_score(game->get_opponent_turn()) << std::endl;
 
+
+        if(game->is_game_finished()){
+            //game->rules();  //checks if the cue ball has collided with any ball and if it has collided with the right ball
+
+
+        }
+        // changing turn based on each player after the other:
         if( game->is_turn_finished() && game->get_game_turn() == game->get_player_turn() ) {
 //            cout << "before finish turn "<< game->get_player_turn() << endl;
 //            cout << " *********** game turn is finished ************* " << endl;
