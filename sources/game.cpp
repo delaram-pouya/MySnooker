@@ -472,7 +472,10 @@ int Game::get_winner_index() {
 
 void Game::reset() {
 
-    this->set_red_flag(true);
+    if(this->is_foul){
+        cout << "set red flag to true in reset function " << endl;
+        this->set_red_flag(true);
+    }
     // next player need to declare new balls(red: 23 , colored:index)
     this->declared_ball_index = -1;
     //

@@ -95,6 +95,12 @@ int main() {
                     game->set_cue_y(event.mouseMove.y);
                 }
 
+                if( !game->get_red_flag() || game->red_ball_count() == 0 )
+                    cout << "it's colored turn or red balls are finished " << endl;
+
+                else if(game->get_red_flag())
+                    cout << "it's red turn " << endl;
+
                 if (event.type == sf::Event::MouseButtonPressed) {
 
                     if (event.mouseButton.button == sf::Mouse::Left) {
@@ -113,6 +119,8 @@ int main() {
 
                             // attempt to pot a colored ball:
                             if( !game->get_red_flag() || game->red_ball_count() == 0 ){
+                                cout << "it's colored turn or red balls are finished " << endl;
+
                                 int ball_index;
                                 std::cout << "enter ball index(16:yellow, 17:brown, 18:green, 19:blue, 20:pink, 21:black):  " << endl;
                                 std::cin >> ball_index;
@@ -139,6 +147,7 @@ int main() {
                             // if it's red ball turn :
                                 // attempt to pot a red ball:
                             else if(game->get_red_flag()){
+                                cout << "it's red turn " << endl;
 
                                 game->set_declare_ball_index(23);
                                 // in order to avoid getting out of range
@@ -150,6 +159,7 @@ int main() {
                                 game->get_ball(0)->set_speed(game->get_cue_speed());
                                 //std::cout << "white ball initial speed is: " << game->get_ball(0)->get_speed() << std::endl;
                                 game->set_red_flag(false);
+                                cout << "at the end of red turn, red falg is switched to  " << game->get_red_flag() << endl;
                             }
                         }
                     }

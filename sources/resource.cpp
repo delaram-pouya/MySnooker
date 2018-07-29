@@ -23,11 +23,12 @@ void Resource::set(std::string str) {
     int server_score, player_score;
 
     double white_speed, teta;
+    bool red_flag;
 
     std::string first,last;
 
 
-    inp >> first >> game_turn >> server_score >> player_score >> teta >> white_speed >> white_x >> white_y >>red1_x >> red1_y >> red2_x  >>  red2_y >> red3_x >> red3_y >> red4_x >> red4_y >>
+    inp >> first >> game_turn >>red_flag >>server_score >> player_score >> teta >> white_speed >> white_x >> white_y >>red1_x >> red1_y >> red2_x  >>  red2_y >> red3_x >> red3_y >> red4_x >> red4_y >>
              red5_x >> red5_y>> red6_x >> red6_y >> red7_x >> red7_y >> red8_x >> red8_y >> red9_x >> red9_y >> red10_x >> red10_y
              >> red11_x >> red11_y >> red12_x >> red12_y >> red13_x  >> red13_y >> red14_x >> red14_y >> red15_x >> red15_y >>
             yellow_x >> yellow_y >> brown_x >> brown_y >> green_x>> green_y >> blue_x >> blue_y >> pink_x >> pink_y >> black_x >> black_y >> last;
@@ -46,11 +47,13 @@ void Resource::set(std::string str) {
         this->game->get_ball(0)->set_speed(white_speed);
         this->game->set_score(0, server_score);
         this->game->set_score(1, player_score);
+        this->game->set_red_flag(red_flag);
     }
 
 
     //inp >> first >> game_turn >> server_score >> player_score >> teta >> white_speed >> white_x >> white_y
     if(!this->game->get_server()) {
+        this->game->set_red_flag(red_flag);
 
         this->game->set_game_turn(game_turn);
 
@@ -142,11 +145,13 @@ void Resource::set(std::string str) {
 std::string Resource::get() {
     std::stringstream res;
 
-    //inp >> first >> game_turn >> server_score >> player_score >> teta >> white_speed >> white_x >> white_y
+    //inp >> first >> game_turn  >>red_flag >> server_score >> player_score >> teta >> white_speed >> white_x >> white_y
 
     // to check if the data is received completely check if first and last there is a {}
     res << "{ "
         << this->game->get_game_turn() << " "
+
+        << this->game->get_red_flag() << " "
         << this->game->get_score(0) << " " << this->game->get_score(1) << " "
         << this->game->get_ball(0)->get_teta() << " "
         << this->game->get_ball(0)->get_speed() << " "
