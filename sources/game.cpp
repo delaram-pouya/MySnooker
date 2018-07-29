@@ -233,6 +233,7 @@ void Game::check_ball2ball_collision() {
     }
 }
 
+
 void Game::check_wall_collision() {
     for(int index = 0 ; index < 22; index++) {
         double ball_x = this->balls[index]->get_x(), ball_y = this->balls[index]->get_y();
@@ -329,7 +330,6 @@ void Game::rules() {
     // turn to not collided state for the next round :
     this->collided_by_cue_ball = -1;
     this->declared_ball_index = -1;
-
 
 }
 
@@ -448,21 +448,26 @@ int Game::get_opponent_turn() {
         return 0;
 }
 
+
 int Game::get_score(int index) {
     return this->scores[index];
 }
+
 
 void Game::set_game_turn(int turn) {
     this->game_turn = turn;
 }
 
+
 void Game::set_score(int p_index, int score) {
     this->scores[p_index] = score;
 }
 
+
 void Game::set_is_server(bool value) {
     this->is_server = value;
 }
+
 
 bool Game::get_server() {
     return this->is_server;

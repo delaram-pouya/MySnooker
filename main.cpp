@@ -146,7 +146,6 @@ int main() {
                 }
             }
         }
-        cout << "" << endl;
         game->update(); //moves balls and calls --> check_wall_collision , check_ball2ball_collision
         //game->rules();  //checks if the cue ball has collided with any ball and if it has collided with the right ball
         game->check_potted();  // checks if any ball has been potted
