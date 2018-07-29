@@ -226,8 +226,6 @@ void Game::check_ball2ball_collision() {
                      << balls[first]->get_x() <<" y is: " << balls[first]->get_y() << std::endl;
                 cout << "second ball: " << balls[second]->get_color() << " x is: "
                      << balls[second]->get_x()<<" y is: "<< balls[second]->get_y() << std::endl;
-
-
             }
         }
     }
@@ -266,7 +264,6 @@ void Game::check_wall_collision() {
         }
     }
 }
-
 
 // score[0] --> server
 // score[1] --> client
@@ -482,6 +479,22 @@ bool Game::is_turn_finished() {
         if( this->get_ball(i)->get_speed() != 0)
             return false;
     return true;
+}
+
+bool Game::is_game_finished() {
+    for(int i = 0 ; i < 22 ; i ++)
+        if(!this->get_ball(i)->check_in_hole())
+            return false;
+    return true;
+}
+
+int Game::get_winner_index() {
+    int winner = 0;
+    if ( this->scores[0] < this->scores[1]  )
+        winner = 1;
+    if(this->scores[0] == this->scores[1])
+        winner = -1;
+    return winner;
 }
 
 

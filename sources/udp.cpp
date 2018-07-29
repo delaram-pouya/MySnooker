@@ -21,7 +21,7 @@ void receive() {
     sf::IpAddress sender;
     unsigned short port;
     while(flag) {
-        cout << "salam" << endl;
+        //cout << "salam" << endl;
         socket.unbind();
         socket.bind(55002);
         sf::sleep(sf::seconds(.7));
@@ -46,11 +46,11 @@ void broadcast() {
     std::string message = "Hi, I am server with IP: " + sf::IpAddress::getLocalAddress().toString();
     while(flag){
         sf::sleep(sf::seconds(.5));
-        std::cout<<"CALLED"<<std::endl;
+        //std::cout<<"CALLED"<<std::endl;
         socket.send(message.c_str(), message.size() + 1, broadcast_add, 55002);}
 }
 
-//nc -lvu 55002
+//nc -lvu 55002  --> cheing in terminal
 
 
 

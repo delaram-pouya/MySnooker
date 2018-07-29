@@ -6,6 +6,7 @@
 #include <iostream>
 #include <thread>
 #include <chrono>
+#include <iomanip>
 
 bool flag= true;
 
@@ -156,12 +157,29 @@ int main() {
         if( game->is_turn_finished() )
             game->set_game_turn(game->get_opponent_turn());
 
+
         //if(a==0)
         network->send();
         //else
         network->receive();
 
         std::this_thread::sleep_for (std::chrono::milliseconds(40));
+
+        // check if game is finished:
+        if(game->is_game_finished()){
+
+            cout <<  " ***** "  << setw(10) <<"GAME FINISHED" << setw(10) << " ***** " << endl;
+            int winner = game->get_winner_index();
+            if(winner == -1)
+                cout << "game is tide " << endl;
+            else{
+                cout << "winner is player: ";
+                if(winner == 0 )
+                    cout << "server player " << endl;
+                else if(winner == 1)
+                    cout << "client player " << endl;
+            }
+        }
 
         window.clear(sf::Color(0, 100, 0));
         renderer(&window, game);

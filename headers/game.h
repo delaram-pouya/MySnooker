@@ -64,6 +64,10 @@ public:
 
     bool is_turn_finished();
 
+    bool is_game_finished();
+
+    int get_winner_index();
+
 
 private:
     int width, height, scores[2] ;

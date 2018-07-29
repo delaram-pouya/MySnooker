@@ -4,6 +4,7 @@
 
 Ball::Ball(double x, double y, double dx, double dy, double speed ,std::string color,
            int score, bool in_hole, double teta,double x_before_col,double y_before_col) {
+
     this->x = x;
     this->y = y;
     this->dx = dx;

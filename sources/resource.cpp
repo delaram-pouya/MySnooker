@@ -34,11 +34,15 @@ void Resource::set(std::string str) {
              >> red11_x >> red11_y >> red12_x >> red12_y >> red13_x  >> red13_y >> red14_x >> red14_y >> red15_x >> red15_y >>
             yellow_x >> yellow_y >> brown_x >> brown_y >> green_x>> green_y >> blue_x >> blue_y >> pink_x >> pink_y >> black_x >> black_y >> last;
 
+    // cout input data to screen --> for debugging
+    // std::cout << inp.str();
 
     // to check if the data is received completely check if first and last there is a {}
-    std::cout << inp.str();
     if(first != "{" || last != "}")
         return;
+
+
+    // to sync clinet and server playing
 
     if(this->game->get_server() && (this->game->get_game_turn() != this->game->get_player_turn() )  ){
         this->game->set_game_turn(game_turn);
@@ -50,7 +54,7 @@ void Resource::set(std::string str) {
     //might need to comment later
     if(!this->game->get_server()) {
 
-        this->game->get_ball(0)->set_speed(white_speed);
+        //this->game->get_ball(0)->set_speed(white_speed);
 
         this->game->set_game_turn(game_turn);
 
