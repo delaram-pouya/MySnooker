@@ -218,8 +218,6 @@ void Game::check_ball2ball_collision() {
                 this->get_ball(first)->move();
                 this->get_ball(second)->move();
 
-
-
 //                cout << "after: " << endl;
 //                cout << "first ball: " << balls[first]->get_color() <<" vf1 is: "
 //                     << balls[first]->get_speed() <<" teta is: "<< balls[first]->get_teta() << std::endl;
@@ -242,6 +240,7 @@ void Game::check_wall_collision() {
 
         if (ball_y <= 0 || ball_y >= this->height){  //collision with wall
             this->balls[index]->reverse_dy();
+            //spin?
 //            double teta_1 = this->balls[index]->get_teta();
 //            double teta_2 = atan( (sin(teta_1)* this->balls[index]->get_dy()) / (cos(teta_1)*this->balls[index]->get_dx()) );
 //            this->balls[index]->set_teta(teta_2);
@@ -249,6 +248,7 @@ void Game::check_wall_collision() {
 
         if (ball_x <= 0 || ball_x >= this->width){  //collision with wall
             this->balls[index]->reverse_dx();
+            //spin?
 //            double teta_1 = this->balls[index]->get_teta();
 //            double teta_2 = atan( (sin(teta_1)* this->balls[index]->get_dy()) / (cos(teta_1)*this->balls[index]->get_dx()) );
 //            this->balls[index]->set_teta(teta_2);

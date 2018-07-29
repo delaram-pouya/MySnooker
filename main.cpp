@@ -80,7 +80,6 @@ int main() {
                 window.close();
 
             if(game_turn == player_turn && game->is_turn_finished()){
-                already_swiched = false;
                 //cout << "it's my: " << player_turn << " turn" << endl;
                 if (event.type == sf::Event::KeyPressed) {
 
@@ -163,17 +162,19 @@ int main() {
 
 
         if(game->is_game_finished()){
-            //game->rules();  //checks if the cue ball has collided with any ball and if it has collided with the right ball
-
-
+            game->rules();  //checks if the cue ball has collided with any ball and if it has collided with the right ball
         }
+
+        if(game->get_is_foul())
+            game->check_foul();
+
         // changing turn based on each player after the other:
-        if( game->is_turn_finished() && game->get_game_turn() == game->get_player_turn() ) {
+        //if( game->is_turn_finished() && game->get_game_turn() == game->get_player_turn() ) {
 //            cout << "before finish turn "<< game->get_player_turn() << endl;
 //            cout << " *********** game turn is finished ************* " << endl;
-            game->set_game_turn(game->get_opponent_turn());
+         //   game->set_game_turn(game->get_opponent_turn());
             //cout << "after finish turn "<< game->get_player_turn() << endl;
-        }
+        //}
 
 
         //if(a==0)
