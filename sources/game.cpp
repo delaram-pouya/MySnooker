@@ -252,12 +252,18 @@ void Game::check_wall_collision() {
 //            this->balls[index]->set_teta(teta_2);
         }
 
-        for(int p_index = 0 ; p_index < 6; p_index++)  //checks if ball is in hole
-            if (  this->pocket_x[p_index] -2 <= ball_x && ball_x <=  this->pocket_x[p_index]+2 &&
-                    this->pocket_y[p_index] -2  <= ball_y && ball_y <= this->pocket_y[p_index]+2){
+        for(int p_index = 0 ; p_index < 6; p_index++) { //checks if ball is in hole
+
+            double delta_x = abs(this->pocket_x[p_index] - ball_x);
+            double delta_y = abs(this->pocket_y[p_index] - ball_y);
+            double center_distance = sqrt( delta_x*delta_x + delta_y*delta_y );
+
+            if (center_distance <= this->pocket_radius) {
                 this->balls[index]->set_in_hole(true);
                 this->last_potted_index = index;
+                this->balls[index]->set_speed(0);
             }
+        }
     }
 }
 
@@ -420,10 +426,7 @@ void Game::update() {
         }
         this->check_wall_collision(); //checks collision with walls
         this->check_ball2ball_collision(); //checks ball to ball collisions
-
-
     }
-
 }
 
 int Game::red_ball_count() {
