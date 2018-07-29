@@ -224,10 +224,10 @@ void Game::check_ball2ball_collision() {
 //                cout << "second ball: " << balls[second]->get_color() << " vf2 is: "
 //                     << balls[second]->get_speed()<<" teta is: "<< balls[second]->get_teta() << std::endl;
 
-                cout << "first ball: " << balls[first]->get_color() <<" x is: "
-                     << balls[first]->get_x() <<" y is: " << balls[first]->get_y() << std::endl;
-                cout << "second ball: " << balls[second]->get_color() << " x is: "
-                     << balls[second]->get_x()<<" y is: "<< balls[second]->get_y() << std::endl;
+                //cout << "first ball: " << balls[first]->get_color() <<" x is: "
+                //     << balls[first]->get_x() <<" y is: " << balls[first]->get_y() << std::endl;
+                //cout << "second ball: " << balls[second]->get_color() << " x is: "
+                 //    << balls[second]->get_x()<<" y is: "<< balls[second]->get_y() << std::endl;
             }
         }
     }
@@ -484,6 +484,7 @@ void Game::reset() {
         for(int i = 16; i < 22 ; i ++)
             this->get_ball(i)->set_in_hole(false);
     //
+    this->is_foul = false;
 }
 
 void Game::set_red_flag(bool flag) {
@@ -504,8 +505,14 @@ void Game::set_is_foul(bool value) {
 
 void Game::check_foul() {
     if(this->is_foul) {
+        cout <<"foul ! " << endl;
+        cout << "player turn is: " << this->get_player_turn() << endl;
+        cout << "before: game_turn is: " << this->get_game_turn() << endl;
         this->reset();
+        cout << "opponent turn is: " << this->get_opponent_turn() << endl;
         this->set_game_turn(this->get_opponent_turn());
+        cout << "after: game_turn is: " << this->get_game_turn() << endl;
+
     }
 }
 

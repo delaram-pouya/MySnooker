@@ -21,9 +21,11 @@ int main() {
     //Game(int width, int height, int p_width, double pocket_x[],
     //        double pocket_y[], double ball_radius, double pocket_radius, double line_x
     //        ,double D_radius, double cue_x, double cue_y, double cue_speed, double rotationDegree
-    //           int declared_index,int potted_index, int collide_by_cue_ball, int red_count, int game_t, int player_t, bool is_server, bool red_turn);
+    //           int declared_index,int potted_index, int collide_by_cue_ball, int red_count, int game_t, int player_t, bool is_server,
+    //                             bool red_turn, bool is_foul );
 
-    Game *game = new Game(356 * 2, 177 * 2, pocket_x, pocket_y, 4.75 , 4 * 2, 73.7 * 2, 29 * 2, 350, 180, 20, 0,-1,-1,-1,15,-1,-1,true,true,false); //13
+    Game *game = new Game(356 * 2, 177 * 2, pocket_x, pocket_y, 4.75 , 4 * 2, 73.7 * 2, 29 * 2, 350, 180, 20,
+                                                                 0, -1, -1, -1, 15, -1, -1, true, true, false); //13
     Resource *resource = new Resource(game);
     Network *network;
 
@@ -70,14 +72,12 @@ int main() {
         game_turn = game->get_game_turn();
         player_turn = game->get_player_turn();
 
-        // change this line:
-        //game_turn = player_turn = 1;
-
         while (window.pollEvent(event)) {
-            // check if it's the players turn and all the ball have stopped:
 
             if (event.type == sf::Event::Closed)
                 window.close();
+
+            // check if it's the players turn and all the ball have stopped:
 
             if(game_turn == player_turn && game->is_turn_finished()){
                 //cout << "it's my: " << player_turn << " turn" << endl;
@@ -141,6 +141,8 @@ int main() {
                             else if(game->get_red_flag()){
 
                                 game->set_declare_ball_index(23);
+                                // in order to avoid getting out of range
+                                teta = int(teta) % 360;
                                 teta = (game->get_rotatation_degree() + 180 )/180;
                                 teta = teta *  3.141592653589793;
                                 game->get_ball(0)->set_teta(teta);
@@ -161,7 +163,7 @@ int main() {
         //std::cout << "apponent score is: " << game->get_score(game->get_opponent_turn()) << std::endl;
 
 
-        if(game->is_game_finished()){
+        if(game->is_turn_finished()){
             game->rules();  //checks if the cue ball has collided with any ball and if it has collided with the right ball
         }
 
@@ -175,7 +177,6 @@ int main() {
          //   game->set_game_turn(game->get_opponent_turn());
             //cout << "after finish turn "<< game->get_player_turn() << endl;
         //}
-
 
         //if(a==0)
         network->send();
