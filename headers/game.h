@@ -14,7 +14,8 @@ public:
     Game(int width, int height, double pocket_x[],
          double pocket_y[], double ball_radius, double pocket_radius, double line_x
           ,double D_radius, double cue_x, double cue_y, double cue_speed, double rotationDegree,
-         int declared_index,int last_potted, int collide_by_cue_all, int red_count, int game_t, int player_t,bool is_server, bool red_turn);
+         int declared_index,int last_potted, int collide_by_cue_all, int red_count, int game_t,
+         int player_t,bool is_server, bool red_turn, bool is_foul);
 
     int get_width();
     int get_height();
@@ -73,6 +74,11 @@ public:
 
     void reset();
 
+    bool get_is_foul();
+    void set_is_foul(bool);
+
+    void check_foul();
+
 
 private:
     int width, height, scores[2] ;
@@ -97,6 +103,7 @@ private:
     bool is_server;
 
     bool red_turn;
+    bool is_foul;
 };
 
 #endif //SFMLPONG_GAME_H

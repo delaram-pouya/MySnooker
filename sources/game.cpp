@@ -10,7 +10,8 @@ Game::Game(int width, int height, double pocket_x[],
            double pocket_y[], double ball_radius, double pocket_radius, double line_x, double D_radius,
                                   double cue_x, double cue_y,double cue_speed, double rotationDegree,
                                              int declared_index,int potted_index, int collide_by_cue_ball,
-                                                       int red_count, int game_t, int player_t ,bool is_server, bool red_turn) {
+                                                       int red_count, int game_t, int player_t
+                                         ,bool is_server, bool red_turn, bool is_foul) {
 
     this->width = width;
     this->height = height;
@@ -52,6 +53,7 @@ Game::Game(int width, int height, double pocket_x[],
 
     this->red_turn = red_turn;
 
+    this->is_foul = is_foul;
     //Ball::Ball(double x, double y, double dx, double dy, double speed ,std::string color,
     //int score, bool in_hole, double teta)
 
@@ -266,20 +268,8 @@ void Game::check_wall_collision() {
         }
     }
 }
-
-// score[0] --> server
-// score[1] --> client
-
-// how should i change the score??? change my own score?? (this->score)??  -->> should it be a list at all????
-// remember to set the declared ball from user in main
-// how to change turn
-
 // balls index:
 // 0: white, 1:15 red, 16:yellow, 17:brown, 18:green, 19:blue, 20:pink, 21:black
-
-
-// if a foul happends --> opponent gets +max(a, 4) points or player get-max(a, 4)
-
 
 void Game::rules() {
     // if cue collision with a ball happends:
@@ -296,30 +286,27 @@ void Game::rules() {
 
         // if it's colored ball turn:
         else if( this->declared_ball_index == this->collided_by_cue_ball && this->collided_by_cue_ball > 15){
+            //has collided with right ball
             this->check_potted(); // checks is wrong balls haven't been potted and sets the score
         }
-
             // if cue ball has collided with :
             /// not in turn ball(red vs colored)
             /// not the declared ball when it's colored ball turn
         else{
-            //this->scores[this->player_turn] -= max(this->balls[collided_by_cue_ball]->get_score(), 4);
             this->scores[this->get_opponent_turn()] += max(this->balls[collided_by_cue_ball]->get_score(), 4);
+            //loose turn
+            this->is_foul = true;
+
         }
     }
 
     // if cue_ball doesn't touch any ball --> loose point and loose turn
     if(this->collided_by_cue_ball == -1 && this->declared_ball_index > 0 ){
-        //this->scores[this->player_turn] -= 4;
         this->scores[this->get_opponent_turn()] += 4;
         //loose turn
-        this->reset();
-        this->set_game_turn(this->get_opponent_turn());
+        this->is_foul = true;
     }
-
 }
-
-
 
 
 void Game::set_declare_ball_index(int index) {
@@ -343,41 +330,39 @@ void Game::check_potted() {
             if( i == 0 ){
                 this->balls[0]->set_x(line_x-(D_radius/2));
                 this->balls[0]->set_y(height/2);
-                //this->scores[this->player_turn] -= 4;
                 this->scores[this->get_opponent_turn()] += 4;
                 // loose the turn
-                this->reset();
-                this->set_game_turn(this->get_opponent_turn());
+                this->is_foul = true;
             }
 
             // if a red ball has been potted:
-            if( i > 0 && i < 16) {
+            else if( i > 0 && i < 16) {
                 // if it's the first potted ball of game or the last potted ball was a colored ball:
                 if( ( (this->last_potted_index == -1) || (this->last_potted_index>15 && this->last_potted_index < 22)) ){
                     this->scores[this->player_turn]++;
                 }
-                else{ //if last potted ball is also a red
-                    //this->scores[this->player_turn]--;
+                else{
+                    //if last potted ball is also a red
                     this->scores[this->get_opponent_turn()] ++;
-                // loose the turn --> how to implement??
-                    this->reset();
-                    this->set_game_turn(this->get_opponent_turn());
+                    // loose the turn
+                    this->is_foul = true;
                     }
             }
 
-
             // if a colored ball has been potted:
             // if player has declared this ball and last potted is a red
-            if( i == this->get_declared_ball_index() && this->last_potted_index > 0 && this->last_potted_index < 16)
+            else if( i == this->get_declared_ball_index() && this->last_potted_index > 0 && this->last_potted_index < 16)
                 this->scores[this->player_turn] += this->balls[i]->get_score();
+
+
             else{
-                //this->scores[this->player_turn] -= max(4, this->balls[i]->get_score());
                 this->scores[this->get_opponent_turn()] += max(4, this->balls[i]->get_score());
+                this->is_foul = true;
             }
         }
     }
 
-    // putting red balls back on the table
+
 
     //count red balls on the table:
     int red_num = 0;
@@ -387,6 +372,7 @@ void Game::check_potted() {
     }
     this->red_count = red_num;
 
+    // putting red balls back on the table
     // if there are any red balls left on the table --> if any colored ball falls in pocket --> put back on last position before collision
     if(red_count>0){
         for(int i = 16 ; i < 22; i++){
@@ -506,6 +492,21 @@ void Game::set_red_flag(bool flag) {
 
 bool Game::get_red_flag() {
     return this->red_turn;
+}
+
+bool Game::get_is_foul() {
+    return this->is_foul;
+}
+
+void Game::set_is_foul(bool value) {
+    this->is_foul = value;
+}
+
+void Game::check_foul() {
+    if(this->is_foul) {
+        this->reset();
+        this->set_game_turn(this->get_opponent_turn());
+    }
 }
 
 

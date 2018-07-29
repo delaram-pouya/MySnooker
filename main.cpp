@@ -23,7 +23,7 @@ int main() {
     //        ,double D_radius, double cue_x, double cue_y, double cue_speed, double rotationDegree
     //           int declared_index,int potted_index, int collide_by_cue_ball, int red_count, int game_t, int player_t, bool is_server, bool red_turn);
 
-    Game *game = new Game(356 * 2, 177 * 2, pocket_x, pocket_y, 4.75 , 4 * 2, 73.7 * 2, 29 * 2, 350, 180, 20, 0,-1,-1,-1,15,-1,-1,true,true); //13
+    Game *game = new Game(356 * 2, 177 * 2, pocket_x, pocket_y, 4.75 , 4 * 2, 73.7 * 2, 29 * 2, 350, 180, 20, 0,-1,-1,-1,15,-1,-1,true,true,false); //13
     Resource *resource = new Resource(game);
     Network *network;
 
@@ -80,6 +80,7 @@ int main() {
                 window.close();
 
             if(game_turn == player_turn && game->is_turn_finished()){
+                already_swiched = false;
                 //cout << "it's my: " << player_turn << " turn" << endl;
                 if (event.type == sf::Event::KeyPressed) {
 
