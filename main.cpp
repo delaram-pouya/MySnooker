@@ -10,9 +10,6 @@
 
 bool flag= true;
 
-bool red = true;
-
-//vector<string> list;
 
 int main() {
     int a;
@@ -24,9 +21,9 @@ int main() {
     //Game(int width, int height, int p_width, double pocket_x[],
     //        double pocket_y[], double ball_radius, double pocket_radius, double line_x
     //        ,double D_radius, double cue_x, double cue_y, double cue_speed, double rotationDegree
-    //           int declared_index,int potted_index, int collide_by_cue_ball, int red_count, int game_t, int player_t);
+    //           int declared_index,int potted_index, int collide_by_cue_ball, int red_count, int game_t, int player_t, bool is_server, bool red_turn);
 
-    Game *game = new Game(356 * 2, 177 * 2, pocket_x, pocket_y, 4.75 , 4 * 2, 73.7 * 2, 29 * 2, 350, 180, 20, 0,-1,-1,-1,15,0,0,true); //13
+    Game *game = new Game(356 * 2, 177 * 2, pocket_x, pocket_y, 4.75 , 4 * 2, 73.7 * 2, 29 * 2, 350, 180, 20, 0,-1,-1,-1,15,0,0,true,true); //13
     Resource *resource = new Resource(game);
     Network *network;
 
@@ -102,7 +99,7 @@ int main() {
                                 event.mouseButton.y <= (game->get_ball(0)->get_y() + game->get_ball_radius())))
                         {
                             std::cout << "in white ball! " << std::endl;
-                            if(!red || game->red_ball_count()==0){
+                            if(!game->get_red_flag() || game->red_ball_count()==0){
                                 int ball_index;
                                 std::cout << "enter ball index(16:yellow, 17:brown, 18:green, 19:blue, 20:pink, 21:black):  " << endl;
                                 std::cin >> ball_index;
@@ -126,10 +123,11 @@ int main() {
                                 game->set_cue_speed(user_speed);
                                 game->get_ball(0)->set_speed(game->get_cue_speed());
                                 //std::cout << "white ball initial speed is: " << game->get_ball(0)->get_speed() << std::endl;
-                                red = true;
+                                //red = true;
+                                game->set_red_flag(true);
                             }
                             // if it's red ball turn :
-                            else if(red){
+                            else if(game->get_red_flag()){
 
                                 game->set_declare_ball_index(23);
                                 teta = (game->get_rotatation_degree() + 180 )/180;
@@ -137,11 +135,10 @@ int main() {
                                 game->get_ball(0)->set_teta(teta);
                                 game->get_ball(0)->set_speed(game->get_cue_speed());
                                 //std::cout << "white ball initial speed is: " << game->get_ball(0)->get_speed() << std::endl;
-                                red = false;
+                                //red = false;
+                                game->set_red_flag(false);
                             }
-
                             // if it's colored ball turn
-
                         }
                     }
                 }

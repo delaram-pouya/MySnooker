@@ -10,7 +10,7 @@ Game::Game(int width, int height, double pocket_x[],
            double pocket_y[], double ball_radius, double pocket_radius, double line_x, double D_radius,
                                   double cue_x, double cue_y,double cue_speed, double rotationDegree,
                                              int declared_index,int potted_index, int collide_by_cue_ball,
-                                                       int red_count, int game_t, int player_t ,bool is_server) {
+                                                       int red_count, int game_t, int player_t ,bool is_server, bool red_turn) {
 
     this->width = width;
     this->height = height;
@@ -49,6 +49,8 @@ Game::Game(int width, int height, double pocket_x[],
     this->pocket_y[3] = pocket_y[3];
     this->pocket_y[4] = pocket_y[4];
     this->pocket_y[5] = pocket_y[5];
+
+    this->red_turn = red_turn;
 
     //Ball::Ball(double x, double y, double dx, double dy, double speed ,std::string color,
     //int score, bool in_hole, double teta)
@@ -327,6 +329,7 @@ void Game::rules() {
         //this->scores[this->player_turn] -= 4;
         this->scores[this->get_opponent_turn()] += 4;
         //loose turn
+        this->reset();
         this->set_game_turn(this->get_opponent_turn());
     }
 
@@ -361,6 +364,7 @@ void Game::check_potted() {
                 //this->scores[this->player_turn] -= 4;
                 this->scores[this->get_opponent_turn()] += 4;
                 // loose the turn
+                this->reset();
                 this->set_game_turn(this->get_opponent_turn());
             }
 
@@ -374,6 +378,7 @@ void Game::check_potted() {
                     //this->scores[this->player_turn]--;
                     this->scores[this->get_opponent_turn()] ++;
                 // loose the turn --> how to implement??
+                    this->reset();
                     this->set_game_turn(this->get_opponent_turn());
                     }
             }
@@ -495,6 +500,26 @@ int Game::get_winner_index() {
     if(this->scores[0] == this->scores[1])
         winner = -1;
     return winner;
+}
+
+void Game::reset() {
+    this->set_red_flag(true);
+    this->declared_ball_index = -1;
+    this->last_potted_index = -1;
+    this->collided_by_cue_ball = -1;
+    this->get_ball(0)->set_in_hole(false);
+    if(this->red_ball_count() != 0 )
+        for(int i = 16; i < 22 ; i ++)
+            this->get_ball(i)->set_in_hole(false);
+    //
+}
+
+void Game::set_red_flag(bool flag) {
+    this->red_turn = flag;
+}
+
+bool Game::get_red_flag() {
+    return this->red_turn;
 }
 
 
