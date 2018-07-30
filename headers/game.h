@@ -47,7 +47,14 @@ public:
     void set_declare_ball_index(int);
     int get_declared_ball_index();
 
+    void set_last_potted(int);
+    int get_last_potted();
+
+    void set_collided_by_cue_ball(int);
+    int get_collided_by_cue_ball();
+
     int red_ball_count();
+    void set_red_ball_count(int);
 
     int get_game_turn();
     void set_game_turn(int);

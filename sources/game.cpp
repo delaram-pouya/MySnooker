@@ -473,7 +473,7 @@ int Game::get_winner_index() {
 void Game::reset() {
 
     if(this->is_foul){
-        cout << "set red flag to true in reset function " << endl;
+        //cout << "set red flag to true in reset function " << endl;
         this->set_red_flag(true);
     }
     // next player need to declare new balls(red: 23 , colored:index)
@@ -517,6 +517,26 @@ void Game::check_foul() {
         cout << "after: game_turn is: " << this->get_game_turn() << endl;
 
     }
+}
+
+void Game::set_last_potted(int index) {
+    this->last_potted_index = index;
+}
+
+int Game::get_last_potted() {
+    return this->last_potted_index;
+}
+
+void Game::set_collided_by_cue_ball(int index) {
+    this->collided_by_cue_ball = index;
+}
+
+int Game::get_collided_by_cue_ball() {
+    return this->collided_by_cue_ball;
+}
+
+void Game::set_red_ball_count(int count) {
+    this->red_count = count;
 }
 
 
