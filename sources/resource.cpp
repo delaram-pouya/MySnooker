@@ -32,18 +32,23 @@ void Resource::set(std::string str) {
 
     //   >> declared_index >> last_potted >> collide_by_cue_all >> red_count,
 
-    inp >> first >> game_turn >>red_flag >>server_score >> player_score >> teta>>
+    // clear player_turn????
+
+    inp >> first >>game_turn >>red_flag >>server_score >> player_score >> teta>>
          declared_index >> last_potted >> collide_by_cue_ball >>
         red_count >> white_speed >> white_x >> white_y >>red1_x >> red1_y >> red2_x  >>  red2_y >> red3_x >> red3_y >> red4_x >> red4_y >>
         red5_x >> red5_y>> red6_x >> red6_y >> red7_x >> red7_y >> red8_x >> red8_y >> red9_x >> red9_y >> red10_x >> red10_y
         >> red11_x >> red11_y >> red12_x >> red12_y >> red13_x  >> red13_y >> red14_x >> red14_y >> red15_x >> red15_y >>
         yellow_x >> yellow_y >> brown_x >> brown_y >> green_x>> green_y >> blue_x >> blue_y >> pink_x >> pink_y >> black_x >> black_y ;
 
+
+    // in_hole variable is set for both below conditions(server & client)
     for(int i = 0 ; i < 22; i++){
         bool in_hole ;
         inp >> in_hole;
         this->game->get_ball(i)->set_in_hole(in_hole);
     }
+
     inp >> last;
 
 
@@ -56,7 +61,9 @@ void Resource::set(std::string str) {
 
     // to sync clinet and server playing
     if(this->game->get_server() && (this->game->get_game_turn() != this->game->get_player_turn() ) ){
+
         this->game->set_game_turn(game_turn);
+        //this->game->set_player_turn(player_turn);  // comment this??
         this->game->get_ball(0)->set_teta(teta);
         this->game->get_ball(0)->set_speed(white_speed);
         this->game->set_score(0, server_score);
@@ -64,10 +71,6 @@ void Resource::set(std::string str) {
         this->game->set_red_flag(red_flag);
     }
 
-
-    //inp >> first >> game_turn >> server_score >> player_score >> teta
-    //   >> declared_index >> last_potted >> collide_by_cue_all >> red_count,
-    // >> white_speed >> white_x >> white_y
     if(!this->game->get_server()) {
         this->game->set_red_flag(red_flag);
 
@@ -77,6 +80,7 @@ void Resource::set(std::string str) {
         this->game->set_red_ball_count(red_count);
 
         this->game->set_game_turn(game_turn);
+        //this->game->set_player_turn(player_turn);   // comment this ??
 
         this->game->get_ball(0)->set_speed(white_speed);
 
@@ -153,18 +157,7 @@ void Resource::set(std::string str) {
 
     }
 
-
-
     return;
-
-    //  to use for loop instead:
-
-//    for(int i = 0 ; i < 22; i++){
-//        double ball_x, ball_y ;
-//        inp >> ball_x >> ball_y;
-//        this->game->get_ball(i)->set_x(ball_x);
-//        this->game->get_ball(i)->set_y(ball_y);
-//    }
 
 
 }
@@ -172,13 +165,9 @@ void Resource::set(std::string str) {
 std::string Resource::get() {
     std::stringstream res;
 
-
-    //inp >> first >> game_turn  >>red_flag >> server_score >> player_score >> teta
-    // >> declared_index >> last_potted >> collide_by_cue_all >> red_count,
-    // >> white_speed >> white_x >> white_y
-
     // to check if the data is received completely check if first and last there is a {}
     res << "{ "
+        //<< this->game->get_player_turn() << " "    // comment this???
         << this->game->get_game_turn() << " "
 
         << this->game->get_red_flag() << " "

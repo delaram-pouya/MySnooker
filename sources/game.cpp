@@ -240,18 +240,10 @@ void Game::check_wall_collision() {
 
         if (ball_y <= 0 || ball_y >= this->height){  //collision with wall
             this->balls[index]->reverse_dy();
-            //spin?
-//            double teta_1 = this->balls[index]->get_teta();
-//            double teta_2 = atan( (sin(teta_1)* this->balls[index]->get_dy()) / (cos(teta_1)*this->balls[index]->get_dx()) );
-//            this->balls[index]->set_teta(teta_2);
         }
 
         if (ball_x <= 0 || ball_x >= this->width){  //collision with wall
             this->balls[index]->reverse_dx();
-            //spin?
-//            double teta_1 = this->balls[index]->get_teta();
-//            double teta_2 = atan( (sin(teta_1)* this->balls[index]->get_dy()) / (cos(teta_1)*this->balls[index]->get_dx()) );
-//            this->balls[index]->set_teta(teta_2);
         }
 
         for(int p_index = 0 ; p_index < 6; p_index++) { //checks if ball is in hole
@@ -295,16 +287,18 @@ void Game::rules() {
         else{
             this->scores[this->get_opponent_turn()] += max(this->balls[collided_by_cue_ball]->get_score(), 4);
             //loose turn
-            this->is_foul = true;
+            if(this->get_player_turn() == this->get_game_turn())
+                this->is_foul = true;
 
         }
     }
 
-    // if cue_ball doesn't touch any ball --> loose point and loose turn
-    if(this->collided_by_cue_ball == -1 && this->declared_ball_index > 0 ){
+    // if all the balls have stopped and cue_ball hasn't touched any ball --> loose point and loose turn
+    if(this->collided_by_cue_ball == -1 && this->declared_ball_index > 0 && this->is_turn_finished()){
         this->scores[this->get_opponent_turn()] += 4;
         //loose turn
-        this->is_foul = true;
+        if(this->get_player_turn() == this->get_game_turn())
+            this->is_foul = true;
     }
 }
 
@@ -324,7 +318,7 @@ void Game::check_potted() {
     //loop through balls to see if any of them has fallen into a pocket
     for(int i = 0 ; i < 22; i++){
         if(this->balls[i]->check_in_hole() ){ //if a ball has fallen to a pocket
-            cout << this->balls[i]->get_color() << " is in pocket " << endl;
+            //cout << this->balls[i]->get_color() << " is in pocket " << endl;
 
             // if the white ball has been potted:
             if( i == 0 ){
@@ -332,7 +326,8 @@ void Game::check_potted() {
                 this->balls[0]->set_y(height/2);
                 this->scores[this->get_opponent_turn()] += 4;
                 // loose the turn
-                this->is_foul = true;
+                if(this->get_player_turn() == this->get_game_turn())
+                    this->is_foul = true;
             }
 
             // if a red ball has been potted:
@@ -345,7 +340,8 @@ void Game::check_potted() {
                     //if last potted ball is also a red
                     this->scores[this->get_opponent_turn()] ++;
                     // loose the turn
-                    this->is_foul = true;
+                    if(this->get_player_turn() == this->get_game_turn())
+                        this->is_foul = true;
                     }
             }
 
@@ -357,7 +353,8 @@ void Game::check_potted() {
 
             else{
                 this->scores[this->get_opponent_turn()] += max(4, this->balls[i]->get_score());
-                this->is_foul = true;
+                if(this->get_player_turn() == this->get_game_turn())
+                    this->is_foul = true;
             }
         }
     }
@@ -487,7 +484,8 @@ void Game::reset() {
         for(int i = 16; i < 22 ; i ++)
             this->get_ball(i)->set_in_hole(false);
     //
-    this->is_foul = false;
+    if(this->is_server)
+        this->is_foul = false;
 }
 
 void Game::set_red_flag(bool flag) {

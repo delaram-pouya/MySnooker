@@ -78,8 +78,14 @@ int main() {
                 window.close();
 
             // check if it's the players turn and all the ball have stopped:
+            if(game->is_turn_finished()) {
+                cout << "foul is: " << game->get_is_foul() << endl;
+                cout << "player turn is: " << game->get_player_turn() << " game turn is: " << game->get_game_turn()
+                     << endl;
+            }
 
             if(game_turn == player_turn && game->is_turn_finished()){
+
                 //cout << "it's my: " << player_turn << " turn" << endl;
                 if (event.type == sf::Event::KeyPressed) {
 
@@ -159,7 +165,7 @@ int main() {
                                 game->get_ball(0)->set_speed(game->get_cue_speed());
                                 //std::cout << "white ball initial speed is: " << game->get_ball(0)->get_speed() << std::endl;
                                 game->set_red_flag(false);
-                                cout << "at the end of red turn, red falg is switched to  " << game->get_red_flag() << endl;
+                                cout << "at the end of red turn, red flag is switched to  " << game->get_red_flag() << endl;
                             }
                         }
                     }
@@ -168,29 +174,16 @@ int main() {
         }
 
         game->update(); //moves balls and calls --> check_wall_collision , check_ball2ball_collision
+        game->rules();  //checks if the cue ball has collided with any ball and if it has collided with the right ball
         game->check_potted();  // checks if any ball has been potted
         //std::cout << "my score is "  << game->get_score(game->get_player_turn()) << std::endl;
         //std::cout << "apponent score is: " << game->get_score(game->get_opponent_turn()) << std::endl;
 
-
-        if(game->is_turn_finished()){
-            game->rules();  //checks if the cue ball has collided with any ball and if it has collided with the right ball
-        }
-
-        if(game->get_is_foul())
+        // a == 0 ?
+        if(game->get_is_foul() && a == 0 )
             game->check_foul();
 
-        // changing turn based on each player after the other:
-        //if( game->is_turn_finished() && game->get_game_turn() == game->get_player_turn() ) {
-//            cout << "before finish turn "<< game->get_player_turn() << endl;
-//            cout << " *********** game turn is finished ************* " << endl;
-         //   game->set_game_turn(game->get_opponent_turn());
-            //cout << "after finish turn "<< game->get_player_turn() << endl;
-        //}
-
-        //if(a==0)
         network->send();
-        //else
         network->receive();
 
         std::this_thread::sleep_for (std::chrono::milliseconds(40));
