@@ -180,7 +180,7 @@ void Game::check_ball2ball_collision() {
                 this->balls[j]->set_x_before_collide(this->balls[j]->get_x());
                 this->balls[j]->set_y_before_collide(this->balls[j]->get_y());
 
-                std::cout << this->balls[i]->get_color() << " ball and " << this->balls[j]->get_color() << " have collided" << std::endl;
+                //std::cout << this->balls[i]->get_color() << " ball and " << this->balls[j]->get_color() << " have collided" << std::endl;
                 if( balls[i]->get_speed()== 0){
                     first = j;
                     second = i; }
@@ -231,7 +231,7 @@ void Game::check_wall_collision() {
 
             double delta_x = abs(this->pocket_x[p_index] - ball_x);
             double delta_y = abs(this->pocket_y[p_index] - ball_y);
-            double center_distance = sqrt( delta_x*delta_x + delta_y*delta_y );
+            double center_distance = sqrt( delta_x * delta_x + delta_y * delta_y );
 
             if (center_distance <= this->pocket_radius) {
                 this->balls[index]->set_in_hole(true);
@@ -340,8 +340,8 @@ void Game::check_potted() {
 
             else{
                 if(this->get_player_turn() == this->get_game_turn()){
-                this->scores[this->get_opponent_turn()] += max(4, this->balls[i]->get_score());
-                this->is_foul = true;
+                    this->scores[this->get_opponent_turn()] += max(4, this->balls[i]->get_score());
+                    this->is_foul = true;
                 }
             }
         }
@@ -467,12 +467,14 @@ void Game::reset() {
     this->last_potted_index = -1;
     // turn to not collided state for the next round :
     this->collided_by_cue_ball = -1;
+
     this->get_ball(0)->set_in_hole(false);
+
     if(this->red_ball_count() != 0 )
         for(int i = 16; i < 22 ; i ++)
             this->get_ball(i)->set_in_hole(false);
     //
-    if(this->is_server)
+    if(this->get_player_turn() == this->get_game_turn())
         this->is_foul = false;
 }
 
@@ -499,9 +501,9 @@ void Game::check_foul() {
         cout << "before: game_turn is: " << this->get_game_turn() << endl;
         this->reset();
         cout << "opponent turn is: " << this->get_opponent_turn() << endl;
-        this->set_game_turn(this->get_opponent_turn());
+        if(this->get_player_turn() == this->get_game_turn())
+            this->set_game_turn(this->get_opponent_turn());
         cout << "after: game_turn is: " << this->get_game_turn() << endl;
-
     }
 }
 
