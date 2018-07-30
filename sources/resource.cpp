@@ -37,10 +37,18 @@ void Resource::set(std::string str) {
         red_count >> white_speed >> white_x >> white_y >>red1_x >> red1_y >> red2_x  >>  red2_y >> red3_x >> red3_y >> red4_x >> red4_y >>
         red5_x >> red5_y>> red6_x >> red6_y >> red7_x >> red7_y >> red8_x >> red8_y >> red9_x >> red9_y >> red10_x >> red10_y
         >> red11_x >> red11_y >> red12_x >> red12_y >> red13_x  >> red13_y >> red14_x >> red14_y >> red15_x >> red15_y >>
-        yellow_x >> yellow_y >> brown_x >> brown_y >> green_x>> green_y >> blue_x >> blue_y >> pink_x >> pink_y >> black_x >> black_y >> last;
+        yellow_x >> yellow_y >> brown_x >> brown_y >> green_x>> green_y >> blue_x >> blue_y >> pink_x >> pink_y >> black_x >> black_y ;
+
+    for(int i = 0 ; i < 22; i++){
+        bool in_hole ;
+        inp >> in_hole;
+        this->game->get_ball(i)->set_in_hole(in_hole);
+    }
+    inp >> last;
+
 
     // cout input data to screen --> for debugging
-    // std::cout << inp.str();
+    //std::cout << inp.str() << endl;
 
     // to check if the data is received completely check if first and last there is a {}
     if(first != "{" || last != "}")
@@ -144,15 +152,21 @@ void Resource::set(std::string str) {
         this->game->get_ball(21)->set_y(black_y);
 
     }
+
+
+
     return;
 
-    //  to usefor loop instead:
+    //  to use for loop instead:
+
 //    for(int i = 0 ; i < 22; i++){
 //        double ball_x, ball_y ;
 //        inp >> ball_x >> ball_y;
 //        this->game->get_ball(i)->set_x(ball_x);
 //        this->game->get_ball(i)->set_y(ball_y);
 //    }
+
+
 }
 
 std::string Resource::get() {
@@ -200,10 +214,13 @@ std::string Resource::get() {
         << this->game->get_ball(18)->get_x() << " " << this->game->get_ball(18)->get_y() << " "
         << this->game->get_ball(19)->get_x() << " " << this->game->get_ball(19)->get_y() << " "
         << this->game->get_ball(20)->get_x() << " " << this->game->get_ball(20)->get_y() << " "
-        << this->game->get_ball(21)->get_x() << " " << this->game->get_ball(21)->get_y() << " "
+        << this->game->get_ball(21)->get_x() << " " << this->game->get_ball(21)->get_y() << " ";
 
+        for(int i = 0 ; i < 22; i++){
+            res <<" " <<this->game->get_ball(i)->check_in_hole()<< " ";
+        }
 
-        << " } ";
+        res << " } ";
 
     return res.str();
 }
