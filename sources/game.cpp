@@ -192,13 +192,6 @@ void Game::check_ball2ball_collision() {
                 else
                     this->collided_by_cue_ball = -1;
 
-//                cout << "before: " << endl;
-//                cout << "first ball: " << balls[first]->get_color() <<" vf1 is: "
-//                     << balls[first]->get_speed() <<" teta is: "<< balls[first]->get_teta() << std::endl;
-//                cout << "second ball: " << balls[second]->get_color() << " vf2 is: "
-//                     << balls[second]->get_speed()<<" teta is: "<< balls[second]->get_teta() << std::endl;
-//
-//                cout << this->balls[first]->get_color() << " was moving and " << this->balls[second]->get_color() << " was static" << std::endl;
                 teta = balls[first]->get_teta();
 
                 vf2 =abs( balls[first]->get_speed()/  sqrt(1 + ( cos(teta)*cos(teta) )/( (sin(2*teta)* sin(2*teta))))   );
@@ -206,8 +199,6 @@ void Game::check_ball2ball_collision() {
 
                 vf1 = abs(vf1) + 0.05;
                 vf2 = abs(vf2) + 0.05;
-
-                //second vs first is teta , 2*teta
 
                 this->get_ball(second)->set_speed(vf2);
                 this->get_ball(second)->set_teta(2*teta);
@@ -218,16 +209,6 @@ void Game::check_ball2ball_collision() {
                 this->get_ball(first)->move();
                 this->get_ball(second)->move();
 
-//                cout << "after: " << endl;
-//                cout << "first ball: " << balls[first]->get_color() <<" vf1 is: "
-//                     << balls[first]->get_speed() <<" teta is: "<< balls[first]->get_teta() << std::endl;
-//                cout << "second ball: " << balls[second]->get_color() << " vf2 is: "
-//                     << balls[second]->get_speed()<<" teta is: "<< balls[second]->get_teta() << std::endl;
-
-                //cout << "first ball: " << balls[first]->get_color() <<" x is: "
-                //     << balls[first]->get_x() <<" y is: " << balls[first]->get_y() << std::endl;
-                //cout << "second ball: " << balls[second]->get_color() << " x is: "
-                 //    << balls[second]->get_x()<<" y is: "<< balls[second]->get_y() << std::endl;
             }
         }
     }
@@ -285,20 +266,22 @@ void Game::rules() {
             /// not in turn ball(red vs colored)
             /// not the declared ball when it's colored ball turn
         else{
-            this->scores[this->get_opponent_turn()] += max(this->balls[collided_by_cue_ball]->get_score(), 4);
-            //loose turn
-            if(this->get_player_turn() == this->get_game_turn())
+            if(this->get_player_turn() == this->get_game_turn()){
+                this->scores[this->get_opponent_turn()] += max(this->balls[collided_by_cue_ball]->get_score(), 4);
+                //loose turn
                 this->is_foul = true;
+            }
 
         }
     }
 
     // if all the balls have stopped and cue_ball hasn't touched any ball --> loose point and loose turn
     if(this->collided_by_cue_ball == -1 && this->declared_ball_index > 0 && this->is_turn_finished()){
-        this->scores[this->get_opponent_turn()] += 4;
-        //loose turn
-        if(this->get_player_turn() == this->get_game_turn())
+        if(this->get_player_turn() == this->get_game_turn()){
+            this->scores[this->get_opponent_turn()] += 4;
+            //loose turn
             this->is_foul = true;
+        }
     }
 }
 
@@ -324,37 +307,42 @@ void Game::check_potted() {
             if( i == 0 ){
                 this->balls[0]->set_x(line_x-(D_radius/2));
                 this->balls[0]->set_y(height/2);
-                this->scores[this->get_opponent_turn()] += 4;
+
                 // loose the turn
-                if(this->get_player_turn() == this->get_game_turn())
+                if(this->get_player_turn() == this->get_game_turn()) {
+                    this->scores[this->get_opponent_turn()] += 4;
                     this->is_foul = true;
+                }
             }
 
             // if a red ball has been potted:
             else if( i > 0 && i < 16) {
-                // if it's the first potted ball of game or the last potted ball was a colored ball:
-                if( ( (this->last_potted_index == -1) || (this->last_potted_index>15 && this->last_potted_index < 22)) ){
-                    this->scores[this->player_turn]++;
-                }
-                else{
-                    //if last potted ball is also a red
-                    this->scores[this->get_opponent_turn()] ++;
-                    // loose the turn
-                    if(this->get_player_turn() == this->get_game_turn())
+                if (this->get_player_turn() == this->get_game_turn()) {
+                    // if it's the first potted ball of game or the last potted ball was a colored ball:
+                    if (((this->last_potted_index == -1) ||
+                         (this->last_potted_index > 15 && this->last_potted_index < 22))) {
+                        this->scores[this->player_turn]++;
+                    } else {
+                        //if last potted ball is also a red
+                        this->scores[this->get_opponent_turn()]++;
+                        // loose the turn
                         this->is_foul = true;
                     }
+                }
             }
 
             // if a colored ball has been potted:
             // if player has declared this ball and last potted is a red
             else if( i == this->get_declared_ball_index() && this->last_potted_index > 0 && this->last_potted_index < 16)
-                this->scores[this->player_turn] += this->balls[i]->get_score();
-
+                if (this->get_player_turn() == this->get_game_turn()) {
+                    this->scores[this->player_turn] += this->balls[i]->get_score();
+                }
 
             else{
+                if(this->get_player_turn() == this->get_game_turn()){
                 this->scores[this->get_opponent_turn()] += max(4, this->balls[i]->get_score());
-                if(this->get_player_turn() == this->get_game_turn())
-                    this->is_foul = true;
+                this->is_foul = true;
+                }
             }
         }
     }
